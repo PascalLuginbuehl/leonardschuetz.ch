@@ -64,6 +64,41 @@ router.use('/auth/status', (req, res) => {
     });
 });
 
+router.use('/auth/register', (req, res) => {
+
+    // Check if both parameters were given
+    if (!req.body.username || !req.body.password) {
+        return res.json({
+            authenticated: false
+        });
+    }
+
+    // Check if the user doesn't exist already
+    let user_already_exists = false;
+    config.users.map((user) => {
+        if (user_already_exists) return;
+        if (user.username == req.body.username) user_already_exists = true;
+    });
+
+    if (user_already_exists) {
+        return res.json({
+            authenticated: false
+        });
+    }
+
+    // Add the user to the list
+    config.users.push({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    req.session.authenticated_user = config.users[config.users.length - 1];
+
+    return res.json({
+        authenticated: true
+    });
+});
+
 module.exports.router = router;
 module.exports.requiresAuthentication = (req, res, next) => {
 
