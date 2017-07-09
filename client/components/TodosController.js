@@ -89,7 +89,7 @@ class TodosController extends ProtoController {
                         onChange={this.handleInputChange}>
                     </LimitedInput>
                     <input type="checkbox" name="todoInputIsLink"></input>
-                    <label for="todoInputIsLink">Todo is a link</label>
+                    <label htmlFor="todoInputIsLink">Todo is a link</label>
                     <button type="submit">Add Todo</button>
                 </form>
             </Card>

@@ -12,7 +12,21 @@ router.get('/', (req, res) => {
 
         try {
             data = JSON.parse(data);
-            res.json(data);
+
+            // Check if the user has any todos, if not initialize his todos list
+            if (!data.users[req.session.authenticated_user.username]) {
+                data.users[req.session.authenticated_user.username] = {
+                    todos: []
+                };
+
+                fs.writeFile(
+                    __dirname + '/data.json',
+                    JSON.stringify(data, null, 4),
+                    'utf8'
+                );
+            }
+
+            res.json(data.users[req.session.authenticated_user.username]);
         } catch (e) {
             res.json({
                 todos: [],
@@ -52,7 +66,10 @@ router.put('/', (req, res) => {
             });
         }
 
-        data.todos[data.todos.length] = {
+        const username = req.session.authenticated_user.username;
+        const user_todos = data.users[req.session.authenticated_user.username];
+
+        user_todos.todos[user_todos.todos.length] = {
             text: req.body.text,
             isLink: req.body.isLink,
         };
@@ -89,13 +106,13 @@ router.delete('/:id', (req, res) => {
             });
         }
 
-        if (id >= data.todos.length || id < 0) {
+        if (id >= data.users[req.session.authenticated_user.username].todos.length || id < 0) {
             return res.json({
                 ok: false,
             });
         }
 
-        data.todos.splice(id, 1);
+        data.users[req.session.authenticated_user.username].todos.splice(id, 1);
 
         res.json({
             ok: true,

@@ -22,10 +22,10 @@ router.use(session({
 router.use((req, res, next) => {
 
     // Only login if the user is not authenticated
-    if (!req.session.authenticated) {
+    if (!req.session.authenticated_user) {
 
         // Defaults to false
-        req.session.authenticated = false;
+        req.session.authenticated_user = undefined;
 
         // Check if both password and username were given
         if (req.body.username && req.body.password) {
@@ -41,7 +41,7 @@ router.use((req, res, next) => {
             // If a user with this username was found, check his password
             if (found_user) {
                 if (found_user.password == req.body.password) {
-                    req.session.authenticated = true;
+                    req.session.authenticated_user = found_user;
                 }
             }
         }
@@ -60,7 +60,7 @@ router.use('/auth/logout', (req, res) => {
 
 router.use('/auth/status', (req, res) => {
     res.json({
-        authenticated: req.session.authenticated,
+        authenticated: req.session.authenticated_user != undefined,
     });
 });
 
@@ -77,7 +77,7 @@ module.exports.requiresAuthentication = (req, res, next) => {
 
     // If there is no session or not authenticated
     if (!req.session) return err(res, 'No session found');
-    if (!req.session.authenticated) return err(res, 'Not authenticated');
+    if (!req.session.authenticated_user) return err(res, 'Not authenticated');
 
     // If properly authenticated, call the next route
     next();
