@@ -99,6 +99,44 @@ router.use('/auth/register', (req, res) => {
     });
 });
 
+router.use('/auth/resetPassword', (req, res) => {
+
+    // Check if all the parameters were given
+    if (!req.body.username || !req.body.oldPassword || !req.body.newPassword) {
+        return res.json({
+            authenticated: false
+        });
+    }
+
+    // Search for the user
+    let found_user;
+    config.users.map((user) => {
+        if (found_user) return;
+        if (user.username == req.body.username) found_user = user;
+    });
+
+    if (!found_user) {
+        return res.json({
+            authenticated: false
+        });
+    }
+
+    // Check if the old password is correct
+    if (found_user.password != req.body.oldPassword) {
+        return res.json({
+            authenticated: false
+        });
+    }
+
+    // Update the users password
+    found_user.password = req.body.newPassword;
+    req.session.authenticated_user = found_user;
+
+    return res.json({
+        authenticated: true
+    });
+});
+
 module.exports.router = router;
 module.exports.requiresAuthentication = (req, res, next) => {
 

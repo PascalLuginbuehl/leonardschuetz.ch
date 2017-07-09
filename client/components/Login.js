@@ -51,10 +51,33 @@ class Login extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.login({
-            username: event.target[0].value,
-            password: event.target[1].value,
-        });
+
+        switch (this.state.componentMode) {
+            case "login": {
+                this.login({
+                    username: event.target[0].value,
+                    password: event.target[1].value,
+                });
+                break;
+            }
+
+            case "register": {
+                this.login({
+                    username: event.target[0].value,
+                    password: event.target[1].value,
+                });
+                break;
+            }
+
+            case "passwordReset": {
+                this.login({
+                    username: event.target[0].value,
+                    oldPassword: event.target[1].value,
+                    newPassword: event.target[2].value,
+                });
+                break;
+            }
+        }
     }
 
     enterRegisterMode(event) {
@@ -162,6 +185,7 @@ class Login extends Component {
                             status={this.state.status}>
                         </StatusView>
                         <form onSubmit={this.handleSubmit}>
+                            <input type='text' name='username' placeholder='Username'></input>
                             <input type='password' name='oldPassword' placeholder='Old Password'></input>
                             <input type='password' name='newPassword' placeholder='New Password'></input>
                             <button type='submit'>Reset Password</button>
