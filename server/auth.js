@@ -8,7 +8,7 @@ const config    = require('./config.json');
 
 // Initial Session
 router.use(session({
-    secret: config.password,
+    secret: config.sessionSecret,
     name: 'SESSID',
     resave: false,
     rolling: true,
@@ -27,12 +27,22 @@ router.use((req, res, next) => {
         // Defaults to false
         req.session.authenticated = false;
 
-        // Check if a password was given
-        if (req.body.password) {
+        // Check if both password and username were given
+        if (req.body.username && req.body.password) {
 
-            // Validate the password
-            if (req.body.password === config.password) {
-                req.session.authenticated = true;
+            // Check if the username exists
+            let found_user;
+
+            config.users.map((user) => {
+                if (found_user) return;
+                if (user.username == req.body.username) found_user = user;
+            });
+
+            // If a user with this username was found, check his password
+            if (found_user) {
+                if (found_user.password == req.body.password) {
+                    req.session.authenticated = true;
+                }
             }
         }
     }

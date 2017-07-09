@@ -7,9 +7,15 @@ mkdir server/logs
 
 # Configuration file
 touch server/config.json; echo '{
-    "password": "testpw1234",
+    "sessionSecret": "testpw1234",
     "portPROD": 3000,
-    "portDEV": 3000
+    "portDEV": 3000,
+    "users": [
+        {
+            "username": "demouser",
+            "password": "testpw1234"
+        }
+    ]
 }' > server/config.json
 
 # Database for the todos app

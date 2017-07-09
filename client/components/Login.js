@@ -43,7 +43,8 @@ class Login extends Component {
     handleSubmit(event) {
         event.preventDefault();
         this.login({
-            password: event.target[0].value,
+            username: event.target[0].value,
+            password: event.target[1].value,
         });
     }
 
@@ -55,6 +56,7 @@ class Login extends Component {
                     status={this.state.status}>
                 </StatusView>
                 <form onSubmit={this.handleSubmit}>
+                    <input type="text" name="username" placeholder="Username"></input>
                     <input type="password" name="password" placeholder="Password"></input>
                     <button type="submit">Log in</button>
                 </form>
